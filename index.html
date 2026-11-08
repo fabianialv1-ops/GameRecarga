@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Recargas - Free Fire</title>
+    <style>
+        :root {
+            --primary-red: #d32f2f;
+            --dark-red: #8b0000;
+            --accent-red: #ff1744;
+            --bg-color: #1a0505;
+            --card-bg: rgba(30, 10, 10, 0.9);
+            --text-color: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color), var(--dark-red));
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-red);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 23, 68, 0.4);
+            padding: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #ff8a80;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ffcdd2;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--accent-red);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff8a80;
+            box-shadow: 0 0 8px var(--accent-red);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--primary-red), var(--accent-red));
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--accent-red);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Styles */
+        .user-info {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .user-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .session-id {
+            font-size: 12px;
+            color: #ff8a80;
+        }
+
+        .credits-badge {
+            background: #b71c1c;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .product-card {
+            background: rgba(50, 10, 10, 0.7);
+            border: 1px solid #ff5252;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .product-card:hover, .product-card.selected {
+            background: var(--accent-red);
+            border-color: white;
+        }
+
+        .verification-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ff8a80;
+            min-height: 25px;
+            text-align: center;
+        }
+
+        /* Success Screen */
+        .success-icon {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .receipt-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px dashed var(--accent-red);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .receipt-row span:last-child {
+            font-weight: bold;
+            color: #ff8a80;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff5252;
+            margin-top: 15px;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 82, 82, 0.2);
+        }
+
+        .transfer-box {
+             background: rgba(50, 0, 0, 0.5);
+            border: 1px solid #ff5252;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error-msg {
+            color: #ff5252;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- SECCIÓN DE INICIO DE SESIÓN -->
+        <div id="login-section">
+            <h1>Game Recargas 🔥</h1>
+            <p style="text-align: center; margin-bottom: 20px; font-size: 14px; color: #ffcdd2;">Acceso para Proveedores</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="tu_correo@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <button type="submit">Entrar al Sistema</button>
+                <div id="login-error" class="error-msg"></div>
+            </form>
+        </div>
+
+        <!-- SECCIÓN DEL PANEL PRINCIPAL -->
+        <div id="dashboard-section" class="hidden">
+            <h1>Game Recargas 💎</h1>
+            <div class="user-info">
+                <div class="user-flex">
+                    <span id="user-display">admin@gamerecargas.com</span>
+                    <div class="credits-badge">🪙 <span id="credits-counter">0</span> Créditos</div>
+                </div>
+                <div class="session-id">ID Único de Sesión: <span id="session-id-display">SESION-VIP777</span></div>
+            </div>
+
+            <!-- SECCIÓN NUEVA: TRANSFERIR CRÉDITOS POR ID -->
+            <div class="transfer-box">
+                <h3 style="font-size: 15px; margin-bottom: 10px; color: #ff8a80;">Transferir Créditos a otro Usuario</h3>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="text" id="transfer-id" placeholder="ID de Sesión del Destinatario (Ej: SESION-123456)">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="number" id="transfer-amount" placeholder="Cantidad de créditos a enviar">
+                </div>
+                <button type="button" onclick="transferirCreditos()" style="margin-top: 0; background: linear-gradient(45deg, #b71c1c, #d32f2f);">Enviar Créditos</button>
+            </div>
+
+            <div class="form-group">
+                <label for="player-id">ID de Free Fire del Jugador</label>
+                <input type="text" id="player-id" placeholder="Ej: 123456789" oninput="verificarJugador()">
+                <div id="verification-result" class="verification-box">Ingresa un ID para verificar...</div>
+            </div>
+
+            <div class="form-group">
+                <label>Selecciona la Oferta / Recarga</label>
+                <div class="products-grid">
+                    <div class="product-card" onclick="seleccionarProducto(110, 1.00, this)">110 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(341, 3.00, this)">341 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(451, 5.00, this)">451 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(572, 8.00, this)">572 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(1220, 10.00, this)">1220 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(2530, 20.00, this)">2530 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto(6600, 50.00, this)">6600 Diamantes</div>
+                    <div class="product-card" onclick="seleccionarProducto('Pase Booyah', 3.50, this)" style="grid-column: span 2;">Pase Booyah 🎟️</div>
+                </div>
+            </div>
+
+            <button onclick="ejecutarRecarga()">Confirmar Recarga</button>
+            <button class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+
+        <!-- SECCIÓN DE RECIBO EXITOSO -->
+        <div id="success-section" class="hidden">
+            <div class="success-icon">✅</div>
+            <h2>¡Recarga Exitosa!</h2>
+            <p style="text-align: center; font-size: 13px; color: #ff8a80; margin-bottom: 10px;">Los diamantes han sido enviados correctamente a Free Fire.</p>
+            
+            <div class="receipt-card">
+                <div class="receipt-row">
+                    <span>Jugador:</span>
+                    <span id="r-name">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>ID Free Fire:</span>
+                    <span id="r-id">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Nº Transacción:</span>
+                    <span id="r-tx">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Pagado (Créditos):</span>
+                    <span id="r-cost">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Cantidad:</span>
+                    <span id="r-item">-</span>
+                </div>
+            </div>
+
+            <button onclick="reiniciarPanel()" style="margin-top: 20px;">Realizar Otra Recarga</button>
+        </div>
+    </div>
+
+    <script>
+        let creditosDisponibles = 0;
+        let productoSeleccionado = null;
+        let nombreVerificadoGlobal = "";
+        
+        // ID fijo predeterminado para el usuario principal
+        const ID_SESION_ESPECIFICO = "SESION-VIP777";
+
+        if (!window.localStorage.getItem('banco_creditos')) {
+            window.localStorage.setItem('banco_creditos', JSON.stringify({}));
+        }
+
+        const baseNombresSimulada = {
+            "123456": "⚡KING亗CR7⚡",
+            "998877": "🌸Valen_UwU🌸",
+            "445566": "🔥[PRO]Drak3🔥",
+            "777777": "👑TheBoss👑"
+        };
+
+        // Comprobar al cargar la página si ya había una sesión activa
+        window.addEventListener('DOMContentLoaded', () => {
+            const usuarioGuardado = window.localStorage.getItem('sesion_activa_email');
+            if (usuarioGuardado) {
+                let banco = JSON.parse(window.localStorage.getItem('banco_creditos'));
+                creditosDisponibles = banco[usuarioGuardado] !== undefined ? banco[usuarioGuardado] : 0;
+                
+                document.getElementById('user-display').innerText = usuarioGuardado;
+                document.getElementById('session-id-display').innerText = ID_SESION_ESPECIFICO;
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                actualizarCreditosUI();
+            }
+        });
+
+        // Inicio de sesión
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('login-error');
+
+            let banco = JSON.parse(window.localStorage.getItem('banco_creditos'));
+
+            if (email === "fabianialv1@gmail.com" && password === "Fiav2012*") {
+                if (banco[email] === undefined) {
+                    banco[email] = 10000000;
+                }
+                creditosDisponibles = banco[email];
+                errorDiv.innerText = "";
+            } else {
+                if (banco[email] === undefined) {
+                    banco[email] = 0;
+                }
+                creditosDisponibles = banco[email];
+                errorDiv.innerText = "";
+            }
+
+            window.localStorage.setItem('banco_creditos', JSON.stringify(banco));
+            // Guardar sesión activa para que no se cierre al recargar
+            window.localStorage.setItem('sesion_activa_email', email);
+
+            document.getElementById('session-id-display').innerText = ID_SESION_ESPECIFICO;
+            document.getElementById('user-display').innerText = email;
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            actualizarCreditosUI();
+        });
+
+        // Función para transferir créditos
+        function transferirCreditos() {
+            const idDestinatario = document.getElementById('transfer-id').value.trim();
+            const cantidad = parseInt(document.getElementById('transfer-amount').value);
+
+            if (!idDestinatario) {
+                alert("Por favor ingresa el ID de sesión del destinatario.");
+                return;
+            }
+
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Ingresa una cantidad válida de créditos a transferir.");
+                return;
+            }
+
+            if (cantidad > creditosDisponibles) {
+                alert("No tienes suficientes créditos para realizar esta transferencia.");
+                return;
+            }
+
+            creditosDisponibles -= cantidad;
+            actualizarCreditosUI();
+
+            let emailActual = document.getElementById('user-display').innerText;
+            let banco = JSON.parse(window.localStorage.getItem('banco_creditos'));
+            banco[emailActual] = creditosDisponibles;
+            window.localStorage.setItem('banco_creditos', JSON.stringify(banco));
+
+            alert(`¡Transferencia exitosa de ${cantidad.toLocaleString()} créditos enviada al ID: ${idDestinatario}!`);
+            
+            document.getElementById('transfer-id').value = "";
+            document.getElementById('transfer-amount').value = "";
+        }
+
+        function verificarJugador() {
+            const idInput = document.getElementById('player-id').value.trim();
+            const cajaResultado = document.getElementById('verification-result');
+
+            if (idInput.length < 4) {
+                cajaResultado.innerText = "Escribe el ID completo...";
+                nombreVerificadoGlobal = "";
+                return;
+            }
+
+            if (baseNombresSimulada[idInput]) {
+                nombreVerificadoGlobal = baseNombresSimulada[idInput];
+            } else {
+                nombreVerificadoGlobal = `🎮Player_${idInput}🔥`;
+            }
+
+            cajaResultado.innerHTML = `Jugador encontrado: <b>${nombreVerificadoGlobal}</b>`;
+        }
+
+        function seleccionarProducto(nombreItem, costo, elementoCard) {
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+            elementoCard.classList.add('selected');
+            
+            productoSeleccionado = {
+                nombre: nombreItem,
+                costo: costo
+            };
+        }
+
+        function ejecutarRecarga() {
+            const idInput = document.getElementById('player-id').value.trim();
+
+            if (!idInput) {
+                alert("Por favor ingresa el ID del jugador.");
+                return;
+            }
+
+            if (!nombreVerificadoGlobal) {
+                verificarJugador();
+            }
+
+            if (!productoSeleccionado) {
+                alert("Por favor selecciona una oferta de diamantes o Pase Booyah.");
+                return;
+            }
+
+            const numTransaccion = "TX-" + Math.floor(10000000 + Math.random() * 90000000);
+
+            document.getElementById('r-name').innerText = nombreVerificadoGlobal;
+            document.getElementById('r-id').innerText = idInput;
+            document.getElementById('r-tx').innerText = numTransaccion;
+            document.getElementById('r-cost').innerText = "$" + productoSeleccionado.costo + " créditos";
+            
+            if(typeof productoSeleccionado.nombre === 'number') {
+                document.getElementById('r-item').innerText = productoSeleccionado.nombre + " Diamantes 💎";
+            } else {
+                document.getElementById('r-item').innerText = productoSeleccionado.nombre;
+            }
+
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('success-section').classList.remove('hidden');
+        }
+
+        function actualizarCreditosUI() {
+            document.getElementById('credits-counter').innerText = creditosDisponibles.toLocaleString();
+        }
+
+        function reiniciarPanel() {
+            document.getElementById('player-id').value = "";
+            document.getElementById('verification-result').innerText = "Ingresa un ID para verificar...";
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+            productoSeleccionado = null;
+            nombreVerificadoGlobal = "";
+            
+            document.getElementById('success-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+        }
+
+        function cerrarSesion() {
+            // Eliminar la sesión guardada para permitir el cierre real
+            window.localStorage.removeItem('sesion_activa_email');
+            
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('email').value = "";
+            document.getElementById('password').value = "";
+            document.getElementById('login-error').innerText = "";
+        }
+    </script>
+</body>
+</html>
+    
+    
